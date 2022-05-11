@@ -10,12 +10,52 @@ const app = express();
 //use function takes 3 arguments
 //If you use next function then request will continue it's journey
 app.use((req, res, next)=>{
-    console.log('Nandini Middleware');
-    next();
+    //Any domain allowed to access server
+    res.setHeader("Access-Control-Allow-Origin","*");
+    //Allow types of headers
+    res.setHeader("Access-Control-Allow-Headers",'Origin, Content-Type, Accept');
+    //allow methods that we want to make accessible
+    res.setHeader("Access-Control-Allow-Methods","GET,POST,PUT,DELETE,OPTIONS");
+    
+
+});
+app.get('/api/tasks',(req, res)=>{
+    const posts = [
+        {
+            task_title: "Frontend",
+            task_description: "Create basic Angular Project",
+            assignee: "Nandini",
+            deadline: '26/05/2022' ,
+            priority: 'High'
+        },
+        {
+            task_title: "Frontend",
+            task_description: "Create Component",
+            assignee: "Bhushan",
+            deadline: '27/05/2022' ,
+            priority: 'High'
+        },
+        {
+            task_title: "Backend",
+            task_description: "Create basic Node Project",
+            assignee: "Akash",
+            deadline: '30/05/2022' ,
+            priority: 'Low'
+        }
+    ]
+    //res.send("Hello from improved server!");
+    res.status(200).json({
+        message: "Task saved successfully",
+        tasks: tasks
+    });
 });
 
-app.use((req, res, next)=>{
-    res.send('Hello Nandini!');
+app.post('/api/posts',(req, res)=>{
+    const post = req.body;
+    console.log('*******Task Saved', task);
+    res.status(201).json({
+        message:"Task stored successfully"
+    });
 });
 
 // we want to use this app in server. to do that we need export it
