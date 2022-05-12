@@ -5,6 +5,7 @@ const taskSchema = mongoose.Schema({
     task_description: {type: String, required: true},
     assignee: {type: String, required: true},
     deadline: {type: Date, required: true},
+    status: {type: String, required: true},
     priority: {type: String, required: true}
 });
 

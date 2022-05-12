@@ -1,8 +1,10 @@
 const express = require("express");
+const bodyParser = require('body-parser');
 const Task = require('./models/task');
 //Create a express app with following command
 const app = express();
 const mongoose = require('mongoose');
+
 //express is a chain of middlewares, that we apply to the incoming requests. Each part of the funnel can do something with the request
 //It could read it, manipulate it, or do something with response,send response.
 
@@ -21,6 +23,8 @@ async function run() {
 }
 
 run();
+app.use(bodyParser.json());
+
 app.use((req, res, next)=>{
     //Any domain allowed to access server
     res.setHeader("Access-Control-Allow-Origin","*");
@@ -32,12 +36,13 @@ app.use((req, res, next)=>{
 
 });
 app.get('/api/tasks',(req, res)=>{
-    const tasks = [
+    /*const tasks = [
         {
             task_title: "Frontend",
             task_description: "Create basic Angular Project",
             assignee: "Nandini",
             deadline: '26/05/2022' ,
+            status: 'Completed',
             priority: 'High'
         },
         {
@@ -45,6 +50,7 @@ app.get('/api/tasks',(req, res)=>{
             task_description: "Create Component",
             assignee: "Bhushan",
             deadline: '27/05/2022' ,
+            status: 'InProgress',
             priority: 'High'
         },
         {
@@ -52,26 +58,41 @@ app.get('/api/tasks',(req, res)=>{
             task_description: "Create basic Node Project",
             assignee: "Akash",
             deadline: '30/05/2022' ,
+            status: 'ToDo',
             priority: 'Low'
         }
-    ]
+    ]*/
     //res.send("Hello from improved server!");
-    res.status(200).json({
-        message: "Task saved successfully",
-        tasks: tasks
+    Task.find().then(documents => {
+        res.status(200).json({
+            message: "Task saved successfully",
+            tasks: documents
+        });
     });
 });
 
 app.post('/api/tasks',(req, res)=>{
     //const post = req.body;
     const task = new Task({
-        title: req.body.title,
-        content: req.body.content
+        task_title: req.body.task_title,
+        task_description: req.body.task_description,
+        assignee: req.body.assignee,
+        deadline: req.body.deadline ,
+        status: req.body.status,
+        priority: req.body.priority
     });
-    console.log('*******Task Saved', task);
+    console.log('*******Task Received', task);
+    /*console.log('*******Task Saved', task);
     res.status(201).json({
         message:"Task stored successfully"
-    });
+    });*/
+    task.save().then(createdTask => {
+        res.status(201).json({
+          message: "Task added successfully",
+          TaskId: createdTask._id
+        });
+      });
+
 });
 
 // we want to use this app in server. to do that we need export it
