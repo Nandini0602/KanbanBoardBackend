@@ -32,7 +32,7 @@ app.use((req, res, next)=>{
     res.setHeader("Access-Control-Allow-Headers",'Origin, Content-Type, Accept');
     //allow methods that we want to make accessible
     res.setHeader("Access-Control-Allow-Methods","GET,POST,PUT,DELETE,OPTIONS");
-    
+    next();
 
 });
 app.get('/api/tasks',(req, res)=>{
@@ -73,6 +73,7 @@ app.get('/api/tasks',(req, res)=>{
 
 app.post('/api/tasks',(req, res)=>{
     //const post = req.body;
+    console.log("Inside POST API")
     const task = new Task({
         task_title: req.body.task_title,
         task_description: req.body.task_description,
@@ -89,7 +90,7 @@ app.post('/api/tasks',(req, res)=>{
     task.save().then(createdTask => {
         res.status(201).json({
           message: "Task added successfully",
-          TaskId: createdTask._id
+          taskId: createdTask._id
         });
       });
 
