@@ -4,6 +4,7 @@ const Task = require('./models/task');
 //Create a express app with following command
 const app = express();
 const mongoose = require('mongoose');
+const task = require("./models/task");
 
 //express is a chain of middlewares, that we apply to the incoming requests. Each part of the funnel can do something with the request
 //It could read it, manipulate it, or do something with response,send response.
@@ -94,6 +95,27 @@ app.post('/api/tasks',(req, res)=>{
         });
       });
 
+});
+app.put('/api/tasks/:id', (req, res, next)=>{
+    const post = new Task({
+        _id: req.body.id,
+        task_title: req.body.task_title,
+        task_description: req.body.task_description,
+        assignee: req.body.assignee,
+        deadline: req.body.deadline ,
+        status: req.body.status,
+        priority: req.body.priority
+    });
+    Task.updateOne({_id: req.params.id}, task).then(result =>{
+        console.log(result);
+        res.status(200).json({message: "updated successfully"});
+    });
+});
+app.delete('/api/tasks/:id', (req, res)=>{
+    Task.deleteOne({_id: req.params.id}).then(result =>{
+        console.log(result);
+        res.status(200).json({message: "Task Delete!"});
+    });
 });
 
 // we want to use this app in server. to do that we need export it
